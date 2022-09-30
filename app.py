@@ -1,7 +1,9 @@
 from flask import Flask
 from flask_restful import Api
+from flask_cors import CORS
 from resources import *
 app = Flask(__name__)
+CORS(app)
 api = Api()
 api.add_resource(UsersApi, '/users')
 api.add_resource(UserApi, '/user/<int:id>')
