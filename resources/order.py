@@ -1,20 +1,20 @@
 from flask_restful import Resource
 
 
-class OrdersApi():
-    def get():
+class OrdersApi(Resource):
+    def get(self):
         pass
 
 
-class OrderApi():
-    def get():
+class OrderApi(Resource):
+    def get(self):
         pass
 
-    def post():
+    def post(self):
         pass
 
-    def put():
+    def put(self):
         pass
 
-    def delete():
+    def delete(self):
         pass

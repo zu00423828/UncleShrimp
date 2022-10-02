@@ -1,12 +1,12 @@
 from flask_restful import Resource
 
 
-class ProductsApi():
+class ProductsApi(Resource):
     def get(self):
         pass
 
 
-class ProductApi():
+class ProductApi(Resource):
     def get(self):
         pass
 
