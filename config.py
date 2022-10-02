@@ -21,6 +21,7 @@ class BaseConfig:  # 基本配置类
 
 class DevelopmentConfig(BaseConfig):
     DEBUG = True
+    JSON_AS_ASCII = False
     SQLALCHEMY_DATABASE_URI = f"mysql+pymysql://{db_user}:{db_passwd}@{db_host}:{db_port}/{db_name}"
     SQLALCHEMY_TRACK_MODIFICATIONS = False
 
