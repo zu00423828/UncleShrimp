@@ -9,7 +9,6 @@ from resources.authuser import AuthApi
 app = Flask(__name__)
 app.config.from_object(config['development'])
 CORS(app)
-
 api = Api(app)
 api.add_resource(AuthApi, '/auth')
 api.add_resource(UsersApi, '/users')

@@ -1,6 +1,4 @@
-from email.policy import default
 from .common import ma
-from datetime import datetime
 
 
 class UserSchema(ma.Schema):
@@ -17,3 +15,18 @@ class UserSchema(ma.Schema):
 class UserAuth(ma.Schema):
     account = ma.Str(required=True)
     password = ma.Str(required=True)
+
+
+class AuthSchema(ma.Schema):
+    token = ma.Str(required=True)
+    expiration_datetime = ma.DateTime(required=True)
+
+
+class ProductSchema(ma.Schema):
+    id = ma.Int(required=False)
+    name = ma.String(required=True)
+    # image = ma.String(required=True)
+    price = ma.Int(required=True)
+    depiction = ma.Str(required=True)
+    display = ma.Boolean(required=True)
+    create_datetime = ma.DateTime(required=False)

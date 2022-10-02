@@ -1,6 +1,7 @@
+from unicodedata import name
 from .common import db
 from enum import Enum
-from datetime import datetime
+from datetime import datetime, timedelta
 from flask_bcrypt import generate_password_hash
 
 
@@ -32,15 +33,37 @@ class User(db.Model):
         self.create_datetime = datetime.now()
 
 
-class Prodect(db.Model):
+class Auth(db.Model):
+    __table__name = 'auth'
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=True)
+    token = db.Column(db.String(128), nullable=True)
+    expiration_datetime = db.Column(db.DateTime, nullable=True)
+
+    def __init__(self, user_id, token) -> None:
+        self.user_id = user_id
+        self.token = token
+        self.expiration_datetime = datetime.now()+timedelta(hours=8)
+
+
+class Product(db.Model):
     __table__name = 'product'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(128), nullable=False)
-    image = db.Column(db.BLOB, nullable=False)
-    quantity = db.Column(db.Integer, nullable=False)
+    image = db.Column(db.LargeBinary, nullable=False)
+    # quantity = db.Column(db.Integer, nullable=False)
     price = db.Column(db.Integer, nullable=False)
     depiction = db.Column(db.Text, nullable=False)
+    display = db.Column(db.Boolean, nullable=False)
     create_datetime = db.Column(db.DateTime, nullable=False)
+
+    def __init__(self, name, image, price, depiction, display) -> None:
+        self.name = name
+        self.image = image
+        self.price = price
+        self.depiction = depiction
+        self.display = display
+        self.create_datetime = datetime.now()
 
 
 class Order(db.Model):
@@ -49,5 +72,5 @@ class Order(db.Model):
     user_id = db.Column(db.Integer, nullable=False)
     info = db.Column(db.Text, nullable=False)
     total = db.Column(db.Integer, nullable=False)
-    statu = db.Column(db.Enum(Status), nullable=False)
+    status = db.Column(db.Enum(Status), nullable=False)
     create_datetime = db.Column(db.DateTime, nullable=False)

@@ -2,6 +2,8 @@ import pymysql
 from dotenv import load_dotenv
 import os
 
+load_dotenv()
+
 
 def get_db_setting():
     db_host = os.environ.get('DBHOST')
@@ -24,11 +26,18 @@ user = '''
     `phone` CHAR(15) NOT NULL, 
     `address`TEXT NOT NULL,
     `create_datetime` DATETIME NOT NULL,
-    UNIQUE KEY `uniq_salt` (salt(32)),
     UNIQUE KEY `uniq_account` (account(128))
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 '''
-
+auth = '''
+    CREATE TABLE IF NOT EXISTS `auth` (
+    `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
+    `user_id` INTEGER NOT NULL,
+    `token` CHAR(128) NOT NULL,
+    expiration_datetime DATETIME NOT NULL,
+    FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
+    ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
+'''
 product = '''   
     CREATE TABLE IF NOT EXISTS `product` (
     `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
@@ -37,6 +46,7 @@ product = '''
     `quantity` INTEGER NOT NULL,
     `price` INTEGER NULL,
     `depiction` TEXT NOT NULL,
+    `display` BOOLEAN NOT NULL,
     `create_datetime` DATETIME NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
 '''
@@ -71,6 +81,7 @@ def create_db():
                            password=db_passwd, database=db_name, charset="utf8")
     cur = conn.cursor()
     cur.execute(user)
+    cur.execute(auth)
     cur.execute(product)
     cur.execute(order)
     conn.commit()
