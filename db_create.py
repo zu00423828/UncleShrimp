@@ -43,7 +43,6 @@ product = '''
     `id` INTEGER PRIMARY KEY AUTO_INCREMENT,
     `name` CHAR(128) NOT NULL,
     `image` LONGBLOB NOT NULL,
-    `quantity` INTEGER NOT NULL,
     `price` INTEGER NULL,
     `depiction` TEXT NOT NULL,
     `display` BOOLEAN NOT NULL,

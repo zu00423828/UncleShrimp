@@ -15,7 +15,7 @@ api.add_resource(AuthApi, '/api/auth')
 api.add_resource(UsersApi, '/api/users')
 api.add_resource(ProductsApi, '/api//products')
 api.add_resource(ProductApi, '/api/product/<int:id>')
-api.add_resource(ProductImage, '/product/<int:id>')
+api.add_resource(ProductImage, '/api/product-image/<int:id>')
 api.add_resource(OrdersApi, '/api/orders')
 api.add_resource(OrderApi, '/api/order/<int:id>')
 
