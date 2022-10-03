@@ -31,7 +31,7 @@ def modify_product(login_info):
                     'depiction': 'product xxxxx', 'display': True}
     file = {'image': open('mock_data/1.webp', 'rb').read()}
     # file = {'image': open('mock_data/2.jpg', 'rb').read()}
-    res = requests.put(productApi+'/2', headers=headers,
+    res = requests.put(productApi+'/1', headers=headers,
                        data=product_data, files=file)
     print(res.json())
 
@@ -39,7 +39,7 @@ def modify_product(login_info):
 def delete_product(login_info):
     token = login_info['token']
     headers = {'Authorization': f'Bearer {token}'}
-    res = requests.put(productApi+'/2', headers=headers)
+    res = requests.delete(productApi+'/1', headers=headers)
     print(res.json())
 
 

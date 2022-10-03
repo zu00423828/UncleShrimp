@@ -51,9 +51,7 @@ class ProductApi(Resource):
         return self.product_schema.dump(product)
 
     def delete(self, id):
-        print('id', id)
-        # product = Product.query.filter_by(id=id).first()
-        # print(product.id)
-        # db.session.delete(product)
-        # db.session.commit()
+        product = Product.query.filter_by(id=id).first()
+        db.session.delete(product)
+        db.session.commit()
         return {'message': 'delete sussess'}
