@@ -29,10 +29,9 @@ class AuthApi(Resource):
         result = db.session.query(User).filter_by(
             account=data['account']).first()
         auth_state = check_password_hash(result.password, data['password'])
-        auth_info = self.create_token(result)
         if not auth_state:
-            return {'login error'}, 400
-
+            return {'message': 'login error'}, 400
+        auth_info = self.create_token(result)
         return auth_info
 
     def create_token(self, user_info: User):

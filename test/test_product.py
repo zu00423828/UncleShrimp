@@ -24,6 +24,13 @@ def create_product(login_info):
     print(res.json())
 
 
+def get_products(login_info):
+    token = login_info['token']
+    headers = {'Authorization': f'Bearer {token}'}
+    res = requests.get(productsApi, headers=headers)
+    print(res.headers, res.json(), len(res.json()))
+
+
 def modify_product(login_info):
     token = login_info['token']
     headers = {'Authorization': f'Bearer {token}'}
@@ -46,5 +53,6 @@ def delete_product(login_info):
 if __name__ == "__main__":
     login_info = login_user()
     # create_product(login_info)
+    get_products(login_info)
     # modify_product(login_info)
-    delete_product(login_info)
+    # delete_product(login_info)

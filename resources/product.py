@@ -1,5 +1,5 @@
-from flask import request, send_file, jsonify
-from flask_restful import Resource
+from flask import request, send_file, jsonify, make_response
+from flask_restful import Resource, reqparse
 from .authuser import auth
 from models import db, Product
 from models.schema import ProductSchema, ProductModify
@@ -11,21 +11,34 @@ class ProductsApi(Resource):
 
     def get(self):
         decorators = [auth.login_required]
-        products: Product = Product.query.all()
+        parser = reqparse.RequestParser()
+        parser.add_argument("limit", required=False, default=20)
+        parser.add_argument("page", required=False, default=1)
+        args = parser.parse_args()
+        limit = args['limit']
+        offset = (args['page']-1)*limit
+        products: Product = Product.query.offset(offset).limit(limit).all()
+        count = Product.query.count()
         for product in products:
             product.image_path = f'/api/product-image/{product.id}'
-        return jsonify(self.product_schema.dump(products, many=True))
+        resp = make_response(
+            jsonify(self.product_schema.dump(products, many=True)), 200)
+        resp.headers['product-total'] = count
+        return resp
 
     def post(self):
         decorators = [auth.login_required]
-        data = request.form
-        data = self.product_schema.load(request.form)
-        image = request.files['image'].read()
-        product = Product(**data, image=image)
-        db.session.add(product)
-        db.session.commit()
-        product.image_path = f'/api/product-image/{product.id}'
-        return jsonify(self.product_schema.dump(product))
+        try:
+            data = request.form
+            data = self.product_schema.load(request.form)
+            image = request.files['image'].read()
+            product = Product(**data, image=image)
+            db.session.add(product)
+            db.session.commit()
+            product.image_path = f'/api/product-image/{product.id}'
+            return jsonify(self.product_schema.dump(product))
+        except:
+            return {'message': "add prouct error"}, 400
 
 
 class ProductImage(Resource):
@@ -44,14 +57,20 @@ class ProductApi(Resource):
         data = self.product_modify.load(request.form)
         if request.files:
             data['image'] = request.files['image'].read()
-        Product.query.filter_by(id=id).update(data)
-        db.session.commit()
-        product = Product.query.filter_by(id=id).first()
-        product.image_path = f'/api/product-image/{product.id}'
-        return self.product_schema.dump(product)
+        try:
+            Product.query.filter_by(id=id).update(data)
+            db.session.commit()
+            product = Product.query.filter_by(id=id).first()
+            product.image_path = f'/api/product-image/{product.id}'
+            return self.product_schema.dump(product)
+        except:
+            return {'message': "modify prouct error"}, 400
 
     def delete(self, id):
-        product = Product.query.filter_by(id=id).first()
-        db.session.delete(product)
-        db.session.commit()
-        return {'message': 'delete sussess'}
+        try:
+            product = Product.query.filter_by(id=id).first()
+            db.session.delete(product)
+            db.session.commit()
+            return {'message': 'delete sussess'}
+        except:
+            return {'message': "delete prouct error"}, 400

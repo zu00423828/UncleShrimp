@@ -15,6 +15,7 @@ class UserSchema(ma.Schema):
 
 class UserModify(ma.Schema):
     name = ma.Str(required=False)
+    password = ma.Str(required=False)
     phone = ma.Str(required=False)
     address = ma.Str(required=False)
 

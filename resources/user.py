@@ -1,5 +1,4 @@
-from collections import UserList
-from flask import request, g
+from flask import request, g, jsonify
 from flask_restful import Resource
 from models.schema import UserSchema, UserModify
 from models import db, User
@@ -12,21 +11,33 @@ class UsersApi(Resource):
 
     def post(self):
         data = self.user_schema.load(request.json)
-        user = User(**data)
-        db.session.add(user)
-        db.session.commit()
-        return self.user_schema.dump(user)
+        try:
+            user = User(**data)
+            db.session.add(user)
+            db.session.commit()
+            return jsonify(self.user_schema.dump(user))
+        except:
+            return {'message': "add user error"}, 400
 
     @auth.login_required
     def put(self):
         data = self.user_modify.load(request.json)
-        User.query.filter_by(id=g.user_id).update(data)
-        db.session.commit()
-        user = User.query.filter_by(id=g.user_id).first()
-        return self.user_schema.dump(user)
+        if 'password' in data:
+            from flask_bcrypt import generate_password_hash
+            data['password'] = generate_password_hash(data['password'])
+        try:
+            User.query.filter_by(id=g.user_id).update(data)
+            db.session.commit()
+            user = User.query.filter_by(id=g.user_id).first()
+            return jsonify(self.user_schema.dump(user))
+        except:
+            return {'message': "modify user error"}, 400
 
     @auth.login_required
     def delete(self):
-        user = User.query.filter_by(id=g.user_id).first()
-        db.session.delete(user)
-        db.session.commit()
+        try:
+            user = User.query.filter_by(id=g.user_id).first()
+            db.session.delete(user)
+            db.session.commit()
+        except:
+            return {'message': "delete user error"}, 400
