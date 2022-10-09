@@ -1,4 +1,3 @@
-from unicodedata import name
 from .common import db
 from enum import Enum
 from datetime import datetime, timedelta
@@ -69,8 +68,16 @@ class Product(db.Model):
 class Order(db.Model):
     __table__name = 'order'
     id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.Integer, nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey(User.id), nullable=False)
     info = db.Column(db.Text, nullable=False)
     total = db.Column(db.Integer, nullable=False)
     status = db.Column(db.Enum(Status), nullable=False)
     create_datetime = db.Column(db.DateTime, nullable=False)
+    user_info = db.relationship('User')
+
+    def __init__(self, user_id, info, total, status) -> None:
+        self.user_id = user_id
+        self.info = info
+        self.total = total
+        self.status = status
+        self.create_datetime = datetime.now()

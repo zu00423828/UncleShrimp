@@ -1,5 +1,5 @@
-from flask import request, send_file, jsonify, make_response
-from flask_restful import Resource, reqparse
+from flask import request, send_file
+from flask_restful import Resource, reqparse, output_json
 from .authuser import auth
 from models import db, Product
 from models.schema import ProductSchema, ProductModify
@@ -8,9 +8,9 @@ from io import BytesIO
 
 class ProductsApi(Resource):
     product_schema = ProductSchema()
+    decorators = [auth.login_required]
 
     def get(self):
-        decorators = [auth.login_required]
         parser = reqparse.RequestParser()
         parser.add_argument("limit", required=False, default=20)
         parser.add_argument("page", required=False, default=1)
@@ -19,25 +19,25 @@ class ProductsApi(Resource):
         offset = (args['page']-1)*limit
         products: Product = Product.query.offset(offset).limit(limit).all()
         count = Product.query.count()
-        for product in products:
-            product.image_path = f'/api/product-image/{product.id}'
-        resp = make_response(
-            jsonify(self.product_schema.dump(products, many=True)), 200)
-        resp.headers['product-total'] = count
+        resp = output_json(data=self.product_schema.dump(
+            products, many=True), code=200, headers={'product-total': count})
         return resp
 
     def post(self):
-        decorators = [auth.login_required]
         try:
             data = request.form
+            print('hello')
             data = self.product_schema.load(request.form)
+            print('hello2')
             image = request.files['image'].read()
+            print('hello3')
             product = Product(**data, image=image)
+            print('hello4')
             db.session.add(product)
             db.session.commit()
-            product.image_path = f'/api/product-image/{product.id}'
-            return jsonify(self.product_schema.dump(product))
-        except:
+            return output_json(data=self.product_schema.dump(product), code=200)
+        except Exception as e:
+            print(e)
             return {'message': "add prouct error"}, 400
 
 

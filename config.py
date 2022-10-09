@@ -17,6 +17,7 @@ db_host, db_port, db_user, db_passwd, db_name = get_db_setting()
 
 class BaseConfig:  # 基本配置类
     SECRET_KEY = os.getenv('SECRET_KEY', 'some secret words')
+    RESTFUL_JSON = {"ensure_ascii": False}
 
 
 class DevelopmentConfig(BaseConfig):

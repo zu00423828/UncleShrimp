@@ -52,7 +52,7 @@ def delete_product(login_info):
 
 if __name__ == "__main__":
     login_info = login_user()
-    # create_product(login_info)
-    get_products(login_info)
+    create_product(login_info)
+    # get_products(login_info)
     # modify_product(login_info)
     # delete_product(login_info)

@@ -14,10 +14,10 @@ api = Api(app)
 api.add_resource(AuthApi, '/api/auth')
 api.add_resource(UsersApi, '/api/users')
 api.add_resource(ProductsApi, '/api//products')
-api.add_resource(ProductApi, '/api/product/<int:id>')
-api.add_resource(ProductImage, '/api/product-image/<int:id>')
+api.add_resource(ProductApi, '/api/products/<int:id>')
+api.add_resource(ProductImage, '/api/productimage/<int:id>')
 api.add_resource(OrdersApi, '/api/orders')
-api.add_resource(OrderApi, '/api/order/<int:id>')
+api.add_resource(OrderApi, '/api/orders/<int:id>')
 
 
 db.init_app(app)
