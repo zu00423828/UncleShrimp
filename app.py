@@ -9,8 +9,8 @@ from resources.product import ProductImage
 
 app = Flask(__name__)
 app.config.from_object(config['development'])
-CORS(app)
 api = Api(app)
+CORS(app)
 api.add_resource(AuthApi, '/api/auth')
 api.add_resource(UsersApi, '/api/users')
 api.add_resource(ProductsApi, '/api//products')

@@ -11,12 +11,16 @@ class ProductsApi(Resource):
     decorators = [auth.login_required]
 
     def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument("limit", required=False, default=20)
-        parser.add_argument("page", required=False, default=1)
-        args = parser.parse_args()
-        limit = args['limit']
-        offset = (args['page']-1)*limit
+        # parser = reqparse.RequestParser()
+        # parser.add_argument("limit", required=False, default=20)
+        # parser.add_argument("page", required=False, default=1)
+        # args = parser.parse_args()
+        args = request.args
+        if 'limit' not in args:
+            limit = 20
+        if 'page' not in args:
+            page = 1
+        offset = (page-1)*limit
         products: Product = Product.query.offset(offset).limit(limit).all()
         count = Product.query.count()
         resp = output_json(data=self.product_schema.dump(
@@ -26,13 +30,9 @@ class ProductsApi(Resource):
     def post(self):
         try:
             data = request.form
-            print('hello')
             data = self.product_schema.load(request.form)
-            print('hello2')
             image = request.files['image'].read()
-            print('hello3')
             product = Product(**data, image=image)
-            print('hello4')
             db.session.add(product)
             db.session.commit()
             return output_json(data=self.product_schema.dump(product), code=200)
@@ -61,7 +61,6 @@ class ProductApi(Resource):
             Product.query.filter_by(id=id).update(data)
             db.session.commit()
             product = Product.query.filter_by(id=id).first()
-            product.image_path = f'/api/product-image/{product.id}'
             return self.product_schema.dump(product)
         except:
             return {'message': "modify prouct error"}, 400

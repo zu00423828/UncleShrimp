@@ -2,22 +2,35 @@ from flask import g
 from flask_restful import Resource, output_json, reqparse, request
 from models import Order, db
 from models.schema import OrderSchema, OrderModify
+from .authuser import auth
 
 
 class OrdersApi(Resource):
     order_schema = OrderSchema()
+    decorators = [auth.login_required]
 
     def get(self):
-        parser = reqparse.RequestParser()
-        parser.add_argument("limit", required=False, default=20)
-        parser.add_argument("page", required=False, default=1)
-        args = parser.parse_args()
-        limit = args['limit']
-        offset = (args['page']-1)*limit
-        count = Order.query.count()
-        data = Order.query.offset(offset).limit(limit).all()
-        data = self.order_schema.dump(data, many=True)
-        return output_json(data=data, code=200, headers={'order-total': count})
+        try:
+
+            # parser = reqparse.RequestParser()
+            # parser.add_argument("limit", required=False, default=20)
+            # parser.add_argument("page", required=False, default=1)
+            # args = parser.parse_args()
+            args = request.args
+            if 'limit' not in args:
+                limit = 20
+            if 'page' not in args:
+                page = 1
+            offset = (page-1)*limit
+            print(limit, offset)
+            count = Order.query.count()
+            data = Order.query.offset(offset).limit(limit).all()
+            # data = Order.query.all()
+            data = self.order_schema.dump(data, many=True)
+            return output_json(data=data, code=200, headers={'order-total': count})
+        except Exception as e:
+            print('happend errors')
+            print(e)
 
     def post(self):
         data = self.order_schema.load(request.json)
@@ -31,16 +44,18 @@ class OrdersApi(Resource):
 
 
 class OrderApi(Resource):
+    decorators = [auth.login_required]
 
     def put(self, id):
         try:
             order_modify = OrderModify()
             data = order_modify.load(request.json)
-            Order.query.filter_by(id=g.user_id).update(data)
+            Order.query.filter_by(id=id).update(data)
             db.session.commit()
             order = Order.query.filter_by(id=id).first()
-            return output_json(order_modify.dump(order))
-        except:
+            return output_json(OrderSchema().dump(order), code=200)
+        except Exception as e:
+            print(e)
             return {'message': "modify oder error"}, 400
 
     def delete(self, id):

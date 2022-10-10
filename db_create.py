@@ -54,7 +54,7 @@ order = '''CREATE TABLE IF NOT EXISTS `order` (
 `user_id` INTEGER NOT NULL,
 `info` TEXT NOT NULL, 
 `total` INTEGER NOT NULL,
-`status` ENUM('unconfirmed','not shipped','shipped','finish') NOT NULL,
+`status` CHAR(16) NOT NULL,
 `create_datetime` DATETIME NOT NULL,
 FOREIGN KEY(user_id) REFERENCES user(id) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4
