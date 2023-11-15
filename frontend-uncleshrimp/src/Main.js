@@ -1,8 +1,8 @@
 import { HashRouter, Routes, Route, Navigate } from "react-router-dom"
 import OrderManagement from "./OrderManagement/OrderManagement"
-import ProductManagement from "./ProductManagement/ProductManagement"
+import ProductManagement from "./OrderManagement/OrderManagement"
 const Main = ({ isAdmin, show }) => {
-    const admin = [
+    const admin = (
         <HashRouter>
             <Routes>
                 <Route key='root' path='/' element={<OrderManagement />} />
@@ -11,9 +11,9 @@ const Main = ({ isAdmin, show }) => {
                 <Route path="/"
                     element={<Navigate to="/" replace={true} />} />
             </Routes>
-        </HashRouter>
-    ]
-    const customer = [
+        </HashRouter>)
+
+    const customer = (
         <HashRouter>
             <Routes>
                 <Route key='root' path='/' element={<OrderManagement />} />
@@ -22,8 +22,8 @@ const Main = ({ isAdmin, show }) => {
                 <Route path="/"
                     element={<Navigate to="/" replace={true} />} />
             </Routes>
-        </HashRouter>
-    ]
+        </HashRouter>)
+
     return isAdmin ? admin : customer
 
 }

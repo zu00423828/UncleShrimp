@@ -3,7 +3,7 @@ import { useState, useEffect } from "react";
 import { productApi, ApiRoot, authHeaders } from "../common/api";
 import 'bootstrap/dist/css/bootstrap.css';
 const ProductManagement = () => {
-    const initPorduct={name:"",price:0,depiction:"",image:null,display:false}
+    const initPorduct = { name: "", price: 0, depiction: "", image: null, display: false }
     const [productData, setProductData] = useState([])
     useEffect(() => { getproductInfo() }, [])
 
@@ -56,8 +56,8 @@ const ProductManagement = () => {
                                 id="name"
                                 name="name"
                                 type="str"
-                                onChange={(e)=>{
-                                    setProduct({...product,name:e.target.value})
+                                onChange={(e) => {
+                                    setProduct({ ...product, name: e.target.value })
                                 }}
                             />
                         </FormGroup>
@@ -69,8 +69,8 @@ const ProductManagement = () => {
                                 id="exampleNumber"
                                 name="number"
                                 type="number"
-                                onChange={(e)=>{
-                                    setProduct({...product,price:e.target.value})
+                                onChange={(e) => {
+                                    setProduct({ ...product, price: e.target.value })
                                 }}
                             />
                         </FormGroup>
@@ -82,8 +82,8 @@ const ProductManagement = () => {
                                 id="depiction"
                                 name="depiction"
                                 type="textarea"
-                                onChange={(e)=>{
-                                    setProduct({...product,depiction:e.target.value})
+                                onChange={(e) => {
+                                    setProduct({ ...product, depiction: e.target.value })
                                 }}
                             />
                         </FormGroup>
@@ -99,10 +99,10 @@ const ProductManagement = () => {
                         </FormGroup>
                         <FormGroup switch >
                             <Label check>*顯示商品</Label>
-                            <Input type="switch" 
-                            onChange={(e)=>{
-                                setProduct({...product,display:e.target.value})
-                            }}
+                            <Input type="switch"
+                                onChange={(e) => {
+                                    setProduct({ ...product, display: e.target.value })
+                                }}
                             />
                         </FormGroup>
                     </Form>
@@ -177,7 +177,7 @@ const ProductManagement = () => {
                     </Form>
                 </ModalBody>
                 <ModalFooter>
-                    <Button color="primary" onClick={() => { toggle()}}>
+                    <Button color="primary" onClick={() => { toggle() }}>
                         儲存
                     </Button>{' '}
                     <Button color="secondary" onClick={toggle}>
@@ -186,7 +186,7 @@ const ProductManagement = () => {
                 </ModalFooter>
             </Modal >)
     }
-    const porductTable = [
+    const porductTable = (
         <Table>
             <thead>
                 <tr align="center">
@@ -213,7 +213,7 @@ const ProductManagement = () => {
             <tbody>
                 {formatData()}
             </tbody>
-        </Table>,]
+        </Table>)
     return (
         <div>
             {<Button color="danger" onClick={AddToggle}>新增商品</Button>}

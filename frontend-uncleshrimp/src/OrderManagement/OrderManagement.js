@@ -80,7 +80,7 @@ const OrderManagement = () => {
             </Modal >)
     }
 
-    const orderTable = [
+    const orderTable = (
         <Table>
             <thead>
                 <tr align="center">
@@ -107,7 +107,7 @@ const OrderManagement = () => {
             <tbody>
                 {formatData()}
             </tbody>
-        </Table>,]
+        </Table>)
     return (
         <div>
             {orderTable}
